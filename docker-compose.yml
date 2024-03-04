@@ -1,0 +1,30 @@
+version: '3'
+services:
+  app:
+    image: 'jc21/nginx-proxy-manager:latest' #最新版npm
+    restart: unless-stopped
+    ports:
+      - '80:80'
+      - '81:81'
+      - '443:443'
+    volumes:
+      - ./data:/data
+      - ./letsencrypt:/etc/letsencrypt
+
+  php:
+    image: twinklegu/maccmsphp
+    build:
+      context: .
+      dockerfile: ./php.dockerfile
+    volumes:
+      - ./www:/var/www/html
+  mysql:
+    image: mysql
+    restart: always
+    volumes:
+      - ./mysql:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=web
+      - MYSQL_USER=web
+      - MYSQL_PASSWORD=web123
